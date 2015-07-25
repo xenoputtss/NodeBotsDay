@@ -7,31 +7,39 @@ stdin.resume();
 
 board.on("ready", function () {
     var wheels = {
-        left: new five.Servo({ pin: 9, type: 'continuous' }),
-        right: new five.Servo({ pin: 10, type: 'continuous' }),
+        left: new five.Servo({ pin: 9, type: 'standard' }),
+        right: new five.Servo({ pin: 10, type: 'standard' }),
         stop: function () {
-            wheels.left.center();
-            wheels.right.center();
+            wheels.left.stop();
+            wheels.right.stop();
         },
         forward: function () {
-            wheels.left.ccw();
-            wheels.right.cw();
+            wheels.left.ccw(1);
+            wheels.right.cw(1);
             console.log("goForward");
         },
         pivotLeft: function () {
-            wheels.left.cw();
-            wheels.right.cw();
+            wheels.left.cw(1);
+            wheels.right.cw(1);
             console.log("turnLeft");
         },
         pivotRight: function () {
-            wheels.left.ccw();
-            wheels.right.ccw();
+            wheels.left.ccw(1);
+            wheels.right.ccw(1);
             console.log("turnRight");
         },
         back: function () {
-            wheels.left.cw();
-            wheels.right.ccw();
-        }
+            wheels.left.cw(1);
+            wheels.right.ccw(1);
+        },
+		quick0: function (){
+			var servo = new five.Servo(10);
+			servo.sweep(0,180);
+			// wheels.left.to(0,250);
+		},
+		quick180: function (){
+			wheels.left.to(180,250);
+		}
     };
     
     wheels.stop();
@@ -64,6 +72,12 @@ board.on("ready", function () {
         case 'space':
         case 'escape':
             wheels.stop();
+            break;
+		case 'g':
+			wheels.quick0();
+            break;
+		case 'h':
+			wheels.quick180();
             break;
         }
     });
