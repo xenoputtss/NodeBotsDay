@@ -1,25 +1,70 @@
 var five = require("johnny-five");
 var board = new five.Board();
 
-board.on("ready", function() {
+var stdin = process.stdin;
+stdin.setRawMode(true);
+stdin.resume();
 
-  var input = new five.Sensor("A0");
-  var led = new five.Led(11);
-  var initialValue;
-
-  input.on("data", function() {
-    if(initialValue === undefined) {
-      initialValue = this.value;
-    }
-    setLed(this.value);
-  });
-
-  function setLed(value) {
-    // sway +/- points to control the LED
-    var sway = 50;
-    var brightness = five.Fn.map(value, initialValue - sway, initialValue + sway, 0, 255);
-
-    console.log("setting LED to " + brightness + " " + value+" " + initialValue);
-    led.brightness(brightness);
-  }
+board.on("ready", function () {
+    var wheels = {
+        left: new five.Servo({ pin: 9, type: 'continuous' }),
+        right: new five.Servo({ pin: 10, type: 'continuous' }),
+        stop: function () {
+            wheels.left.center();
+            wheels.right.center();
+        },
+        forward: function () {
+            wheels.left.ccw();
+            wheels.right.cw();
+            console.log("goForward");
+        },
+        pivotLeft: function () {
+            wheels.left.cw();
+            wheels.right.cw();
+            console.log("turnLeft");
+        },
+        pivotRight: function () {
+            wheels.left.ccw();
+            wheels.right.ccw();
+            console.log("turnRight");
+        },
+        back: function () {
+            wheels.left.cw();
+            wheels.right.ccw();
+        }
+    };
+    
+    wheels.stop();
+    console.log("Use the cursor keys or ASWD to move your bot. Hit escape or the spacebar to stop.");
+    
+    stdin.on("keypress", function(chunk, key) {
+        if (!key) return;
+        
+        switch (key.name) {
+        case 'up':
+        case 'w':
+            wheels.forward();
+            break;
+            
+        case 'down':
+        case 's':
+            wheels.back();
+            break;
+            
+        case 'left':
+        case 'a':
+            wheels.pivotLeft();
+            break;
+            
+        case 'right':
+        case 'd':
+            wheels.pivotRight();
+            break;
+            
+        case 'space':
+        case 'escape':
+            wheels.stop();
+            break;
+        }
+    });
 });
