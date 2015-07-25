@@ -1,0 +1,13 @@
+{
+  "name": "LineBot",
+  "version": "0.0.0",
+  "description": "LineBot",
+  "main": "app.js",
+  "author": {
+    "name": "ryan.forster",
+    "email": ""
+  },
+  "dependencies": {
+    "johnny-five": "^0.8.85"
+  }
+}
